@@ -74,6 +74,43 @@ class Paper {
   }
 }
 
+function initDraggable(element) {
+  let isDragging = false;
+  let startX, startY;
+
+  // Mouse events for desktop
+  element.addEventListener('mousedown', startDragging);
+  document.addEventListener('mousemove', drag);
+  document.addEventListener('mouseup', stopDragging);
+
+  // Touch events for mobile
+  element.addEventListener('touchstart', startDragging);
+  document.addEventListener('touchmove', drag);
+  document.addEventListener('touchend', stopDragging);
+
+  function startDragging(e) {
+    isDragging = true;
+    const evt = e.type.startsWith('touch') ? e.touches[0] : e;
+    startX = evt.clientX - element.offsetLeft;
+    startY = evt.clientY - element.offsetTop;
+    e.preventDefault();
+  }
+
+  function drag(e) {
+    if (!isDragging) return;
+    const evt = e.type.startsWith('touch') ? e.touches[0] : e;
+    const newX = evt.clientX - startX;
+    const newY = evt.clientY - startY;
+    element.style.left = `${newX}px`;
+    element.style.top = `${newY}px`;
+    e.preventDefault();
+  }
+
+  function stopDragging() {
+    isDragging = false;
+  }
+}
+
 const papers = Array.from(document.querySelectorAll('.paper'));
 
 papers.forEach(paper => {
